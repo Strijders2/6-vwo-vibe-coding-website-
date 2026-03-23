@@ -3,482 +3,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mijn Todo Lijst</title>
+    <title>Mijn Taken - Chat 1</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #FF6B9D;
+            --secondary: #FEC84D;
+            --accent: #4ECDC4;
+            --purple: #9B59B6;
+            --bg: #FFF8F0;
+            --dark: #2C3E50;
+            --light: #FFFFFF;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Quicksand', sans-serif;
+            background: var(--bg);
+            color: var(--dark);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
 
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            width: 100%;
-            max-width: 500px;
-            animation: slideIn 0.5s ease;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--purple) 100%);
+            border-radius: 20px;
         }
 
         h1 {
-            color: #667eea;
-            text-align: center;
+            font-family: 'Press Start 2P', cursive;
+            color: var(--light);
+            font-size: 2rem;
             margin-bottom: 10px;
-            font-size: 2.5rem;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
+        .card {
+            background: var(--light);
+            border: 4px solid var(--dark);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 8px 8px 0 var(--dark);
         }
 
-        .input-container {
-            display: flex;
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
             gap: 10px;
             margin-bottom: 30px;
         }
 
-        #taskInput {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-
-        #taskInput:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        #addBtn {
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        #addBtn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        #addBtn:active {
-            transform: translateY(0);
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .stat {
+        .calendar-day-header {
             text-align: center;
+            font-weight: 700;
+            padding: 10px;
+            background: var(--dark);
+            color: var(--light);
+            border-radius: 8px;
         }
 
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
+        .calendar-day {
+            min-height: 80px;
+            padding: 8px;
+            background: var(--light);
+            border: 3px solid var(--dark);
+            border-radius: 10px;
+            cursor: pointer;
         }
 
-        .stat-label {
+        .calendar-day:hover {
+            transform: translateY(-3px);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        }
+
+        .calendar-day.has-tasks {
+            background: #e8f5e9;
+        }
+
+        .day-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .task-count-badge {
+            background: var(--primary);
+            color: var(--light);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.8rem;
-            color: #666;
+            font-weight: 700;
         }
 
-        #todoList {
+        .date-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .date-selector input {
+            padding: 12px 20px;
+            border: 3px solid var(--dark);
+            border-radius: 10px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: var(--accent);
+            border: 3px solid var(--dark);
+            border-radius: 10px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--dark);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--light);
+        }
+
+        .task-input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .task-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 3px solid var(--dark);
+            border-radius: 10px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .task-list {
             list-style: none;
         }
 
-        .todo-item {
-            background: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
+        .task-item {
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: all 0.3s ease;
-            animation: fadeIn 0.5s ease;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            border: 3px solid var(--dark);
+            border-radius: 12px;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .todo-item.removing {
-            animation: fadeOut 0.3s ease;
-            opacity: 0;
-            transform: translateX(20px);
-        }
-
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-        }
-
-        .todo-item:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-
-        .todo-item.completed {
+        .task-item.completed {
             opacity: 0.6;
-        }
-
-        .todo-item.completed .todo-text {
             text-decoration: line-through;
-            color: #999;
         }
 
-        .checkbox {
-            width: 24px;
-            height: 24px;
+        .task-checkbox {
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            accent-color: #667eea;
         }
 
-        .todo-text {
+        .task-text {
             flex: 1;
-            font-size: 16px;
-            color: #333;
-            word-break: break-word;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
-        .delete-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
+        .task-delete {
             padding: 8px 15px;
+            background: var(--primary);
+            color: var(--light);
+            border: 2px solid var(--dark);
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.2s ease;
+            font-weight: 700;
         }
 
-        .delete-btn:hover {
-            background: #ff5252;
-            transform: scale(1.05);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 10px;
-        }
-
-        .clear-all-btn {
-            width: 100%;
-            padding: 12px;
-            background: #ff6b6b;
+        .version-tag {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
             color: white;
-            border: none;
+            padding: 10px 20px;
             border-radius: 10px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.2s ease;
-        }
-
-        .clear-all-btn:hover {
-            background: #ff5252;
-            transform: translateY(-2px);
-        }
-
-        .clear-all-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .input-container {
-                flex-direction: column;
-            }
-
-            #addBtn {
-                width: 100%;
-            }
+            font-weight: 700;
+            border: 3px solid var(--dark);
+            box-shadow: 4px 4px 0 var(--dark);
         }
     </style>
 </head>
 <body>
+    <div class="version-tag">Chat 1 - Basis</div>
+
     <div class="container">
-        <h1>📝 Mijn Todo Lijst</h1>
-        <p class="subtitle">Blijf georganiseerd en productief!</p>
+        <header>
+            <h1>📋 Mijn Takenlijst</h1>
+            <p style="color: white; margin-top: 10px;">Plan je taken per dag</p>
+        </header>
 
-        <div class="input-container">
-            <input 
-                type="text" 
-                id="taskInput" 
-                placeholder="Voeg een nieuwe taak toe..."
-                maxlength="200"
-            >
-            <button id="addBtn">Toevoegen</button>
-        </div>
-
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-number" id="totalTasks">0</div>
-                <div class="stat-label">Totaal</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number" id="activeTasks">0</div>
-                <div class="stat-label">Actief</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number" id="completedTasks">0</div>
-                <div class="stat-label">Voltooid</div>
+        <div class="card">
+            <h2 style="margin-bottom: 20px; color: var(--primary);">Maand Overzicht</h2>
+            <div class="calendar-grid">
+                <div class="calendar-day-header">Ma</div>
+                <div class="calendar-day-header">Di</div>
+                <div class="calendar-day-header">Wo</div>
+                <div class="calendar-day-header">Do</div>
+                <div class="calendar-day-header">Vr</div>
+                <div class="calendar-day-header">Za</div>
+                <div class="calendar-day-header">Zo</div>
+                <div id="calendarDays"></div>
             </div>
         </div>
 
-        <ul id="todoList"></ul>
+        <div class="card">
+            <div class="date-selector">
+                <input type="date" id="taskDate" />
+                <button class="btn" onclick="goToToday()">Vandaag</button>
+            </div>
 
-        <button id="clearAllBtn" class="clear-all-btn" disabled>
-            Wis Alle Voltooide Taken
-        </button>
+            <div class="task-input-group">
+                <input type="text" id="taskInput" class="task-input" placeholder="Nieuwe taak toevoegen..." />
+                <button class="btn btn-primary" onclick="addTask()">Toevoegen</button>
+            </div>
+
+            <h2 style="margin-bottom: 20px; color: var(--primary);">
+                Taken voor <span id="selectedDate"></span>
+            </h2>
+            
+            <ul id="taskList" class="task-list"></ul>
+        </div>
     </div>
 
     <script>
-        // Todo App Class
-        class TodoApp {
-            constructor() {
-                this.tasks = this.loadTasks();
-                this.taskInput = document.getElementById('taskInput');
-                this.addBtn = document.getElementById('addBtn');
-                this.todoList = document.getElementById('todoList');
-                this.clearAllBtn = document.getElementById('clearAllBtn');
-                
-                this.init();
+        let tasks = JSON.parse(localStorage.getItem('tasks_chat1')) || {};
+        let currentDate = new Date().toISOString().split('T')[0];
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function initializeDate() {
+            document.getElementById('taskDate').value = currentDate;
+            updateSelectedDate();
+            renderCalendar();
+            loadTasks();
+        }
+
+        function updateSelectedDate() {
+            const dateInput = document.getElementById('taskDate');
+            currentDate = dateInput.value;
+            const date = new Date(currentDate + 'T00:00:00');
+            document.getElementById('selectedDate').textContent = date.toLocaleDateString('nl-NL', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+            loadTasks();
+        }
+
+        function goToToday() {
+            currentDate = new Date().toISOString().split('T')[0];
+            document.getElementById('taskDate').value = currentDate;
+            updateSelectedDate();
+        }
+
+        function renderCalendar() {
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const firstDayOfWeek = (firstDay.getDay() + 6) % 7;
+            const lastDate = lastDay.getDate();
+
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+
+            const today = new Date().toISOString().split('T')[0];
+
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                calendarDays.appendChild(document.createElement('div'));
             }
 
-            // Initialiseer de app
-            init() {
-                this.renderTasks();
-                this.updateStats();
-                this.attachEventListeners();
-            }
-
-            // Event listeners
-            attachEventListeners() {
-                // Toevoegen via knop
-                this.addBtn.addEventListener('click', () => this.addTask());
+            for (let day = 1; day <= lastDate; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayTasks = tasks[dateStr] || [];
                 
-                // Toevoegen via Enter toets
-                this.taskInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.addTask();
-                    }
-                });
-
-                // Wis alle voltooide taken
-                this.clearAllBtn.addEventListener('click', () => this.clearCompleted());
-            }
-
-            // Taak toevoegen
-            addTask() {
-                const taskText = this.taskInput.value.trim();
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
                 
-                if (taskText === '') {
-                    this.taskInput.focus();
-                    return;
-                }
-
-                const task = {
-                    id: Date.now(),
-                    text: taskText,
-                    completed: false,
-                    createdAt: new Date().toISOString()
+                if (dateStr === today) dayEl.classList.add('today');
+                if (dayTasks.length > 0) dayEl.classList.add('has-tasks');
+                
+                dayEl.innerHTML = `
+                    <div class="day-number">${day}</div>
+                    ${dayTasks.length > 0 ? `<span class="task-count-badge">${dayTasks.length}</span>` : ''}
+                `;
+                
+                dayEl.onclick = () => {
+                    currentDate = dateStr;
+                    document.getElementById('taskDate').value = dateStr;
+                    updateSelectedDate();
                 };
-
-                this.tasks.push(task);
-                this.saveTasks();
-                this.renderTasks();
-                this.updateStats();
                 
-                // Clear input en focus
-                this.taskInput.value = '';
-                this.taskInput.focus();
-            }
-
-            // Taak verwijderen
-            deleteTask(id) {
-                const taskElement = document.querySelector(`[data-id="${id}"]`);
-                taskElement.classList.add('removing');
-                
-                setTimeout(() => {
-                    this.tasks = this.tasks.filter(task => task.id !== id);
-                    this.saveTasks();
-                    this.renderTasks();
-                    this.updateStats();
-                }, 300);
-            }
-
-            // Taak togglen (done/undone)
-            toggleTask(id) {
-                const task = this.tasks.find(task => task.id === id);
-                if (task) {
-                    task.completed = !task.completed;
-                    this.saveTasks();
-                    this.renderTasks();
-                    this.updateStats();
-                }
-            }
-
-            // Wis alle voltooide taken
-            clearCompleted() {
-                const completedTasks = document.querySelectorAll('.todo-item.completed');
-                
-                completedTasks.forEach(task => {
-                    task.classList.add('removing');
-                });
-
-                setTimeout(() => {
-                    this.tasks = this.tasks.filter(task => !task.completed);
-                    this.saveTasks();
-                    this.renderTasks();
-                    this.updateStats();
-                }, 300);
-            }
-
-            // Render alle taken
-            renderTasks() {
-                this.todoList.innerHTML = '';
-
-                if (this.tasks.length === 0) {
-                    this.todoList.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">🎉</div>
-                            <p>Geen taken! Voeg er een toe om te beginnen.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                this.tasks.forEach(task => {
-                    const li = document.createElement('li');
-                    li.className = `todo-item ${task.completed ? 'completed' : ''}`;
-                    li.setAttribute('data-id', task.id);
-                    
-                    li.innerHTML = `
-                        <input 
-                            type="checkbox" 
-                            class="checkbox" 
-                            ${task.completed ? 'checked' : ''}
-                        >
-                        <span class="todo-text">${this.escapeHtml(task.text)}</span>
-                        <button class="delete-btn">Verwijder</button>
-                    `;
-
-                    // Checkbox event
-                    li.querySelector('.checkbox').addEventListener('change', () => {
-                        this.toggleTask(task.id);
-                    });
-
-                    // Delete button event
-                    li.querySelector('.delete-btn').addEventListener('click', () => {
-                        this.deleteTask(task.id);
-                    });
-
-                    this.todoList.appendChild(li);
-                });
-            }
-
-            // Update statistieken
-            updateStats() {
-                const total = this.tasks.length;
-                const completed = this.tasks.filter(task => task.completed).length;
-                const active = total - completed;
-
-                document.getElementById('totalTasks').textContent = total;
-                document.getElementById('activeTasks').textContent = active;
-                document.getElementById('completedTasks').textContent = completed;
-
-                // Enable/disable clear button
-                this.clearAllBtn.disabled = completed === 0;
-            }
-
-            // Opslaan in localStorage
-            saveTasks() {
-                localStorage.setItem('todoTasks', JSON.stringify(this.tasks));
-            }
-
-            // Laden uit localStorage
-            loadTasks() {
-                const tasks = localStorage.getItem('todoTasks');
-                return tasks ? JSON.parse(tasks) : [];
-            }
-
-            // Escape HTML voor veiligheid
-            escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
+                calendarDays.appendChild(dayEl);
             }
         }
 
-        // Start de app
-        const app = new TodoApp();
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const taskText = input.value.trim();
+            
+            if (taskText === '') return;
+
+            if (!tasks[currentDate]) {
+                tasks[currentDate] = [];
+            }
+
+            tasks[currentDate].push({
+                id: Date.now(),
+                text: taskText,
+                completed: false
+            });
+
+            saveTasks();
+            loadTasks();
+            renderCalendar();
+            input.value = '';
+        }
+
+        function toggleTask(id) {
+            if (tasks[currentDate]) {
+                const task = tasks[currentDate].find(t => t.id === id);
+                if (task) {
+                    task.completed = !task.completed;
+                    saveTasks();
+                    loadTasks();
+                }
+            }
+        }
+
+        function deleteTask(id) {
+            if (tasks[currentDate]) {
+                tasks[currentDate] = tasks[currentDate].filter(t => t.id !== id);
+                saveTasks();
+                loadTasks();
+                renderCalendar();
+            }
+        }
+
+        function loadTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+
+            const dayTasks = tasks[currentDate] || [];
+
+            if (dayTasks.length === 0) {
+                taskList.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Geen taken voor deze dag.</p>';
+                return;
+            }
+
+            dayTasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = 'task-item' + (task.completed ? ' completed' : '');
+                li.innerHTML = `
+                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
+                           onchange="toggleTask(${task.id})">
+                    <span class="task-text">${task.text}</span>
+                    <button class="task-delete" onclick="deleteTask(${task.id})">🗑️</button>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+
+        function saveTasks() {
+            localStorage.setItem('tasks_chat1', JSON.stringify(tasks));
+        }
+
+        document.getElementById('taskDate').addEventListener('change', updateSelectedDate);
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addTask();
+        });
+
+        initializeDate();
     </script>
 </body>
 </html>
-
